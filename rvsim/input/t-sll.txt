@@ -1,0 +1,13 @@
+ Address    Code        Basic                     Source
+
+0x00400000  0x00b519b3  sll x19,x10,x11       3            sll     s3, a0, a1
+0x00400004  0x00b55a33  srl x20,x10,x11       4            srl     s4, a0, a1
+0x00400008  0x40b55ab3  sra x21,x10,x11       5            sra     s5, a0, a1
+0x0040000c  0x40a002b3  sub x5,x0,x10         7            sub     t0, x0, a0
+0x00400010  0x00b29b33  sll x22,x5,x11        8            sll     s6, t0, a1
+0x00400014  0x00b2dbb3  srl x23,x5,x11        9            srl     s7, t0, a1
+0x00400018  0x40b2dc33  sra x24,x5,x11        10           sra     s8, t0, a1
+0x0040001c  0x00c29313  slli x6,x5,0x0000000c 12           slli    t1, t0, 12
+0x00400020  0x0142d393  srli x7,x5,0x00000014 13           srli    t2, t0, 20
+0x00400024  0x40f2de13  srai x28,x5,0x0000000f14           srai    t3, t0, 15
+0x00400028  0x00511e93  slli x29,x2,0x0000000515           slli    t4, sp, 5

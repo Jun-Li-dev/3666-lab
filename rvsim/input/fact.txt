@@ -1,0 +1,24 @@
+ Address    Code        Basic                     Source
+
+0x00400000  0x00050493  addi x9,x10,0x0000000018           addi    s1, a0, 0       # n
+0x00400004  0x00018913  addi x18,x3,0x0000000019           addi    s2, gp, 0
+0x00400008  0x00000413  addi x8,x0,0x00000000 22           addi    s0, x0, 0       # i = 0
+0x0040000c  0x00100513  addi x10,x0,0x0000000123           addi    a0, x0, 1
+0x00400010  0x00a92023  sw x10,0x00000000(x18)24           sw      a0, 0(s2)
+0x00400014  0x04940263  beq x8,x9,0x00000022  31           beq     s0, s1, exit
+0x00400018  0x00140413  addi x8,x8,0x00000001 33           addi    s0, s0, 1
+0x0040001c  0x00040593  addi x11,x8,0x0000000034           addi    a1, s0, 0
+0x00400020  0x00000863  beq x0,x0,0x00000008  35           beq     x0, x0, mul_main
+0x00400024  0x00a92223  sw x10,0x00000004(x18)37           sw      a0, 4(s2)
+0x00400028  0x00490913  addi x18,x18,0x000000038           addi    s2, s2, 4
+0x0040002c  0xfe0004e3  beq x0,x0,0xfffffff4  40           beq     x0, x0, main_loop
+0x00400030  0x00050633  add x12,x10,x0        44           add     a2, a0, x0
+0x00400034  0x00000533  add x10,x0,x0         47           add     a0, x0, x0
+0x00400038  0x00058e63  beq x11,x0,0x0000000e 50           beq     a1, x0, mul_exit
+0x0040003c  0x0015f293  andi x5,x11,0x0000000151           andi    t0, a1, 1
+0x00400040  0x00028463  beq x5,x0,0x00000004  52           beq     t0, x0, mul_skip
+0x00400044  0x00c50533  add x10,x10,x12       53           add     a0, a0, a2
+0x00400048  0x00161613  slli x12,x12,0x000000055           slli    a2, a2, 1
+0x0040004c  0x0015d593  srli x11,x11,0x000000056           srli    a1, a1, 1
+0x00400050  0xfe0004e3  beq x0,x0,0xfffffff4  57           beq     x0, x0, mul_loop
+0x00400054  0xfc0008e3  beq x0,x0,0xffffffe8  60           beq     x0, x0, l_ret

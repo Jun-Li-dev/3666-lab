@@ -1,0 +1,146 @@
+==========Cycle     0
+0x00400000: 0x00B57433
+opcode=0b0110011 51
+funct7=0b0000000 0
+funct3=0b111 7
+rs1=0b01010 10
+rs2=0b01011 11
+rd=0b01000 8
+immediate=0X0000000B 11
+Branch=0
+MemRead=0
+MemtoReg=0
+ALUOp=0b10 2
+MemWrite=0
+ALUSrc=0
+RegWrite=1
+ALUOperation=0b0000 0
+BranchTarget=0X0040000B 4194315
+ReadData1=0X0000000A 10
+ReadData2=0X0000000B 11
+ALUInput2=0X0000000B 11
+ALUResult=0X0000000A 10
+Zero=0
+MemReadData=0X00000000 0
+WriteData=0X0000000A 10
+PCSrc=0
+NextPC=0X00400004 4194308
+==========Cycle     1
+0x00400004: 0x00B564B3
+opcode=0b0110011 51
+funct7=0b0000000 0
+funct3=0b110 6
+rs1=0b01010 10
+rs2=0b01011 11
+rd=0b01001 9
+immediate=0X0000000B 11
+Branch=0
+MemRead=0
+MemtoReg=0
+ALUOp=0b10 2
+MemWrite=0
+ALUSrc=0
+RegWrite=1
+ALUOperation=0b0001 1
+BranchTarget=0X0040000F 4194319
+ReadData1=0X0000000A 10
+ReadData2=0X0000000B 11
+ALUInput2=0X0000000B 11
+ALUResult=0X0000000B 11
+Zero=0
+MemReadData=0X00000000 0
+WriteData=0X0000000B 11
+PCSrc=0
+NextPC=0X00400008 4194312
+==========Cycle     2
+0x00400008: 0x00A172B3
+opcode=0b0110011 51
+funct7=0b0000000 0
+funct3=0b111 7
+rs1=0b00010 2
+rs2=0b01010 10
+rd=0b00101 5
+immediate=0X0000000A 10
+Branch=0
+MemRead=0
+MemtoReg=0
+ALUOp=0b10 2
+MemWrite=0
+ALUSrc=0
+RegWrite=1
+ALUOperation=0b0000 0
+BranchTarget=0X00400012 4194322
+ReadData1=0X7FFFEFF0 2147479536
+ReadData2=0X0000000A 10
+ALUInput2=0X0000000A 10
+ALUResult=0X00000000 0
+Zero=1
+MemReadData=0X00000000 0
+WriteData=0X00000000 0
+PCSrc=0
+NextPC=0X0040000C 4194316
+==========Cycle     3
+0x0040000C: 0x00A16333
+opcode=0b0110011 51
+funct7=0b0000000 0
+funct3=0b110 6
+rs1=0b00010 2
+rs2=0b01010 10
+rd=0b00110 6
+immediate=0X0000000A 10
+Branch=0
+MemRead=0
+MemtoReg=0
+ALUOp=0b10 2
+MemWrite=0
+ALUSrc=0
+RegWrite=1
+ALUOperation=0b0001 1
+BranchTarget=0X00400016 4194326
+ReadData1=0X7FFFEFF0 2147479536
+ReadData2=0X0000000A 10
+ALUInput2=0X0000000A 10
+ALUResult=0X7FFFEFFA 2147479546
+Zero=0
+MemReadData=0X00000000 0
+WriteData=0X7FFFEFFA 2147479546
+PCSrc=0
+NextPC=0X00400010 4194320
+==========Cycle     4
+0x00400010: 0x00000013
+opcode=0b0010011 19
+funct7=0b0000000 0
+funct3=0b000 0
+rs1=0b00000 0
+rs2=0b00000 0
+rd=0b00000 0
+immediate=0X00000000 0
+Branch=0
+MemRead=0
+MemtoReg=0
+ALUOp=0b11 3
+MemWrite=0
+ALUSrc=1
+RegWrite=1
+ALUOperation=0b0010 2
+BranchTarget=0X00400010 4194320
+ReadData1=0X00000000 0
+ReadData2=0X00000000 0
+ALUInput2=0X00000000 0
+ALUResult=0X00000000 0
+Zero=1
+MemReadData=0X00000000 0
+WriteData=0X00000000 0
+PCSrc=0
+NextPC=0X00400014 4194324
+INFO: done is set in cycle 4
+==========Report
+x0 =0x00000000(          0) x1 =0x00000001(          1) x2 =0x7FFFEFF0( 2147479536) x3 =0x10010000(  268500992)
+x4 =0x7F010000( 2130771968) x5 =0x00000000(          0) x6 =0x7FFFEFFA( 2147479546) x7 =0x00000007(          7)
+x8 =0x0000000A(         10) x9 =0x0000000B(         11) x10=0x0000000A(         10) x11=0x0000000B(         11)
+x12=0x0000000C(         12) x13=0x0000000D(         13) x14=0x0000000E(         14) x15=0x0000000F(         15)
+x16=0x00000010(         16) x17=0x00000011(         17) x18=0x00000012(         18) x19=0x00000013(         19)
+x20=0x00000014(         20) x21=0x00000015(         21) x22=0x00000016(         22) x23=0x00000017(         23)
+x24=0x00000018(         24) x25=0x00000019(         25) x26=0x0000001A(         26) x27=0x0000001B(         27)
+x28=0x0000001C(         28) x29=0x0000001D(         29) x30=0x0000001E(         30) x31=0x0000001F(         31)
+Simulation time: 49

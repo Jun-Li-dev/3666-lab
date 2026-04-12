@@ -1,0 +1,22 @@
+ Address    Code        Basic                     Source
+
+0x00400000  0x00a58633  add x12,x11,x10       1            add     x12, x11, x10
+0x00400004  0x00b606b3  add x13,x12,x11       2            add     x13, x12, x11
+0x00400008  0x00c68733  add x14,x13,x12       3            add     x14, x13, x12
+0x0040000c  0x00d707b3  add x15,x14,x13       4            add     x15, x14, x13
+0x00400010  0x00e78833  add x16,x15,x14       5            add     x16, x15, x14
+0x00400014  0x00f808b3  add x17,x16,x15       6            add     x17, x16, x15
+0x00400018  0x01088933  add x18,x17,x16       7            add     x18, x17, x16
+0x0040001c  0x011909b3  add x19,x18,x17       8            add     x19, x18, x17
+0x00400020  0x40a00a33  sub x20,x0,x10        10           sub     x20, x0, x10
+0x00400024  0x40b00ab3  sub x21,x0,x11        11           sub     x21, x0, x11
+0x00400028  0x40c00b33  sub x22,x0,x12        12           sub     x22, x0, x12
+0x0040002c  0x40d00bb3  sub x23,x0,x13        13           sub     x23, x0, x13
+0x00400030  0x40e00c33  sub x24,x0,x14        14           sub     x24, x0, x14
+0x00400034  0x40f00cb3  sub x25,x0,x15        15           sub     x25, x0, x15
+0x00400038  0x41000d33  sub x26,x0,x16        16           sub     x26, x0, x16
+0x0040003c  0x41100db3  sub x27,x0,x17        17           sub     x27, x0, x17
+0x00400040  0x41200e33  sub x28,x0,x18        18           sub     x28, x0, x18
+0x00400044  0x41300eb3  sub x29,x0,x19        19           sub     x29, x0, x19
+0x00400048  0x40200f33  sub x30,x0,x2         21           sub     x30, x0, sp
+0x0040004c  0x40a00fb3  sub x31,x0,x10        22           sub     x31, x0, x10

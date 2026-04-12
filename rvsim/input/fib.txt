@@ -1,0 +1,18 @@
+ Address    Code        Basic                     Source
+
+0x00400000  0x00400a13  addi x20,x0,0x0000000416           addi    s4, x0, 4
+0x00400004  0x00018d33  add x26,x3,x0         17   	add	s10, gp, x0	# s10 pointing to F(i)
+0x00400008  0x00000db3  add x27,x0,x0         20   	add	s11, x0, x0
+0x0040000c  0x000d2023  sw x0,0x00000000(x26) 21   	sw	x0, 0(s10)
+0x00400010  0x02ad8863  beq x27,x10,0x0000001824   	beq	s11, a0, exit
+0x00400014  0x001d8db3  add x27,x27,x1        27   	add	s11, s11, x1
+0x00400018  0x014d0d33  add x26,x26,x20       28   	add	s10, s10, s4
+0x0040001c  0x001d2023  sw x1,0x00000000(x26) 29   	sw	x1, 0(s10)
+0x00400020  0x02ad8063  beq x27,x10,0x0000001033   	beq	s11, a0, exit
+0x00400024  0x001d8db3  add x27,x27,x1        37           add     s11, s11, x1
+0x00400028  0x014d0d33  add x26,x26,x20       38   	add	s10, s10, s4 
+0x0040002c  0xff8d2283  lw x5,0xfffffff8(x26) 40   	lw	t0, -8(s10)
+0x00400030  0xffcd2303  lw x6,0xfffffffc(x26) 41   	lw	t1, -4(s10)
+0x00400034  0x006283b3  add x7,x5,x6          42   	add	t2, t0, t1
+0x00400038  0x007d2023  sw x7,0x00000000(x26) 43   	sw	t2, 0(s10)
+0x0040003c  0xfe0002e3  beq x0,x0,0xfffffff2  45   	beq	x0, x0, loop
