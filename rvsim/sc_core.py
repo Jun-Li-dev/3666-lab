@@ -1,6 +1,10 @@
 # Copyright 2021-2023 Zhijie Shi. All rights reserved. See LICENSE.txt.
 # tag: adeccb49a0ec73532b768cda5f609bcb6297f5ca1233
 
+from turtle import reset
+
+from turtle import reset
+
 from myhdl import * 
 
 from hardware.register import RegisterE
@@ -47,19 +51,19 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
 
     # Main Control
     u_control = MainControl(sig.opcode,
-                        sig.ALUOp,
-                        sig.ALUSrc,
-                        sig.Branch,
-                        sig.MemRead,
-                        sig.MemWrite,
-                        sig.MemtoReg,
-                        sig.RegWrite)
+                    sig.ALUOp,
+                    sig.ALUSrc,
+                    sig.Branch,
+                    sig.MemRead,
+                    sig.MemWrite,
+                    sig.MemtoReg,
+                    sig.RegWrite)
 
     # Register File
     u_rf = RegisterFile(sig.ReadData1, sig.ReadData2,
-                    sig.rs1, sig.rs2, sig.rd,
-                    sig.WriteData, sig.RegWrite,
-                    rf, clock)
+                sig.rs1, sig.rs2, sig.rd,
+                sig.WriteData, sig.RegWrite,
+                rf, clock)
 
     # Immediate Generator
     u_imm = ImmGen(sig.immediate, sig.instruction)
@@ -77,8 +81,8 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
 
     # Data Memory
     u_dmem = Ram(sig.MemReadData, sig.ALUResult, sig.ReadData2,
-             sig.MemRead, sig.MemWrite,
-             dmem_data, clock)
+            sig.MemRead, sig.MemWrite,
+            dmem_data, clock)
 
     # Write-back mux
     u_mux_wb = Mux2(sig.WriteData, sig.ALUResult, sig.MemReadData, sig.MemtoReg)
@@ -86,13 +90,13 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     # PC + 4
     u_pc4 = Adder(sig.PC4, sig.PC, sig.Const4)
 
-    # Branch target (IMPORTANT: shift left 1)
+    # Branch target
     u_branch = Adder(sig.BranchTarget, sig.PC, sig.immediate << 1)
 
     # Branch decision
     u_and = And2(sig.PCSrc, sig.Branch, sig.Zero)
 
-    # PC mux
+    # PC register
     u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
 
     ##### Do NOT change the lines below
