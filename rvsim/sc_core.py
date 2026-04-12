@@ -87,13 +87,13 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     u_pc4 = Adder(sig.PC4, sig.PC, sig.Const4)
 
     # Branch target (IMPORTANT: shift left 1)
-    u_branch = Adder(sig.BranchTarget, sig.PC, sig.immediate << 1)
+    u_branch = Adder(sig.BranchTarget, sig.PC, sig.immediate)
 
     # Branch decision
     u_and = And2(sig.PCSrc, sig.Branch, sig.Zero)
 
     # PC mux
-    u_mux_pc = Mux2(sig.NextPC, sig.PC4, sig.BranchTarget, sig.PCSrc)
+    u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
 
     ##### Do NOT change the lines below
     @always_comb
