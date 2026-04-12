@@ -43,7 +43,7 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     # TODO
     
     # Instruction Memory
-    u_imem = Rom(sig.instruction, sig.PC, imem_data)
+    u_imem = Rom(sig.instruction, sig.PC - init_pc, imem_data)
 
     # Main Control
     u_control = MainControl(sig.opcode,
