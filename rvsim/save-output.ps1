@@ -1,23 +1,54 @@
-if ($ARGS.length -ne 1) {
-    Write-Error "Please specify a directory to save output files."
-    exit
-}
+# Copyright 2021-2023 Zhijie Shi. All rights reserved. See LICENSE.txt.
+from myhdl import block, always_comb, intbv, concat
 
-$outputdir = $ARGS[0]
-if ( -not (Test-Path $outputdir -PathType Container) ) {
-    Write-Error "'$outputdir' is not a folder."
-    exit
-}
+@block
+def ImmGen(immediate, instruction):
+    """Generate immediate from instruction.
 
-py rvsim.py input\t-add.txt > "$outputdir\t-add-out.txt"
-py rvsim.py input\t-and.txt > "$outputdir\t-and-out.txt"
-py rvsim.py input\t-sll.txt > "$outputdir\t-sll-out.txt"
-py rvsim.py input\t-i.txt > "$outputdir\t-i-out.txt"
-py rvsim.py input\t-beq.txt > "$outputdir\t-beq-out.txt"
-py rvsim.py input\t-sw.txt > "$outputdir\t-sw-out.txt"
-py rvsim.py input\t-hello.txt > "$outputdir\t-hello-out.txt"
-py rvsim.py input\reversebytes.txt -a 0xA0B1C2D3 > "$outputdir\reversebytes-out.txt"
-py rvsim.py input\fib.txt > "$outputdir\fib-out.txt"
-py rvsim.py input\fact.txt > "$outputdir\fact-out.txt"
-# py rvsim.py input\fib.txt -e 0 -a 47 > "$outputdir\fib-47-out.txt"
-# may add more commands to compare with expected-output
+    Supported instruction types:
+
+        000 0011: I, LW ...
+        001 0011: I, ANDI, ORI, ...
+        010 0011: S
+        110 0011: SB 
+
+        011 0011: R   treated as I
+
+    Not supported (to be implemented in assignments): 
+        001 0111: U, AUIPC
+        011 0111: U, LUI
+        110 0111: I, JALR
+        110 1111: UJ, JAL
+
+    See the paragraph at the end of Section 4.3 in textbook for comments about
+    generating immediate for R, Load, Store, and branches.
+
+    """
+
+    # 12-bit immd
+    # Note that the upper bound is not inclusive in MyHDL
+    # [12:] specifies 12 bits: bits 11 to 0
+    imm12 = intbv(0)[12:]
+
+    # 20-bit immd, for U and UJ type
+    imm20 = intbv(0)[20:]
+
+    # change 20 to 52 for 64 bits
+    sign1 = intbv(-1)[20:]  
+
+    @always_comb
+    def comb_logic():
+        opcode = instruction[7:]
+        if opcode == 0x63: # SB
+            imm12 = concat(instruction[7], instruction[31:25], instruction[12:8], bool(0))
+        elif opcode == 0x23: # S
+            imm12 = concat(instruction[32:25], instruction[12:7])
+        else:  # I and R
+            imm12 = instruction[32:20]
+
+        if instruction[31]:  # duplicate 1's
+            immediate.next = concat(sign1, imm12)
+        else:
+            immediate.next = imm12
+
+    return comb_logic
