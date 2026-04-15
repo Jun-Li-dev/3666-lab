@@ -46,58 +46,36 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     ##### Do NOT change the lines above
     # TODO
     
-    # Instruction Memory
-    u_imem = Rom(sig.instruction, sig.PC, imem_data)
+    u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
+    
+    u_instr_mem = Rom(sig.instruction, sig.PC, imem_data)
 
-    # Main Control
-    u_control = MainControl(sig.opcode,
-                    sig.ALUOp,
-                    sig.ALUSrc,
-                    sig.Branch,
-                    sig.MemRead,
-                    sig.MemWrite,
-                    sig.MemtoReg,
-                    sig.RegWrite)
+    u_adder_1 = Adder(sig.PC4, sig.PC, sig.Const4)
 
-    # Register File
-    u_rf = RegisterFile(sig.ReadData1, sig.ReadData2,
-                sig.rs1, sig.rs2, sig.rd,
-                sig.WriteData, sig.RegWrite,
-                rf, clock)
+    u_adder_2 = Adder(sig.BranchTarget, sig.PC, sig.immediate)
 
-    # Immediate Generator
-    u_imm = ImmGen(sig.immediate, sig.instruction)
+    u_mux = Mux2(sig.ALUInput2, sig.ReadData2, sig.immediate, sig.ALUSrc)
 
-    # ALU Control
+    u_mux2 = Mux2(sig.WriteData, sig.ALUResult, sig.MemReadData, sig.MemtoReg)
+
+    u_mux3 = Mux2(sig.NextPC, sig.PC4, sig.BranchTarget, sig.PCSrc)
+
+    u_pcsrc = And2(sig.PCSrc, sig.Branch, sig.Zero)
+
+    u_main_control = MainControl(sig.opcode, sig.ALUOp, sig.ALUSrc, sig.Branch,
+    sig.MemRead, sig.MemWrite, sig.MemtoReg, sig.RegWrite)
+
     u_alu_control = ALUControl(sig.ALUOp, sig.instr30, sig.funct3, sig.ALUOperation)
 
-    # ALU input mux
-    u_mux_alu = Mux2(sig.ALUInput2, sig.ReadData2, sig.immediate, sig.ALUSrc)
+    u_alu = ALU(sig.ALUResult, sig.Zero, sig.ReadData1, sig.ALUInput2, sig.ALUOperation)
 
-    # ALU
-    u_alu = ALU(sig.ALUResult, sig.Zero,
-            sig.ReadData1, sig.ALUInput2,
-            sig.ALUOperation)
+    u_immgen = ImmGen(sig.immediate, sig.instruction)
 
-    # Data Memory
-    u_dmem = Ram(sig.MemReadData, sig.ALUResult, sig.ReadData2,
-            sig.MemRead, sig.MemWrite,
-            dmem_data, clock)
+    u_dmem = Ram(sig.MemReadData, sig.ReadData2, sig.ALUResult, sig.MemRead,
+    sig.MemWrite, dmem_data, clock)
 
-    # Write-back mux
-    u_mux_wb = Mux2(sig.WriteData, sig.ALUResult, sig.MemReadData, sig.MemtoReg)
-
-    # PC + 4
-    u_pc4 = Adder(sig.PC4, sig.PC, sig.Const4)
-
-    # Branch target
-    u_branch = Adder(sig.BranchTarget, sig.PC, sig.immediate << 1)
-
-    # Branch decision
-    u_and = And2(sig.PCSrc, sig.Branch, sig.Zero)
-
-    # PC register
-    u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
+    u_rf = RegisterFile(sig.ReadData1, sig.ReadData2, sig.rs1, sig.rs2, sig.rd,
+    sig.WriteData, sig.RegWrite, rf, clock)
 
     ##### Do NOT change the lines below
     @always_comb
