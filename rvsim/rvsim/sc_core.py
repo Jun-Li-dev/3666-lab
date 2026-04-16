@@ -53,149 +53,89 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     # sig.signal1 is always 1, which means that PC is always updated in this
     # implementation
 
-    # Instruction Memory
+    # Instruction memory
+    u_imem = Rom(sig.PC, sig.instruction, imem_data)
 
-    u_imem = Rom(
-        addr=sig.PC,
-        dout=sig.instruction,
-        mem=imem_data
-    )
-
-    # Register File
-
+    # Register file
     u_rf = RegisterFile(
-        rs1=sig.rs1,
-        rs2=sig.rs2,
-        rd=sig.rd,
-        rd_data=sig.WriteData,
-        regWrite=sig.RegWrite,
-        rs1_data=sig.ReadData1,
-        rs2_data=sig.ReadData2,
-        clock=clock,
-        regs=rf
+        sig.rs1, sig.rs2, sig.rd,
+        sig.WriteData, sig.RegWrite,
+        sig.ReadData1, sig.ReadData2,
+        clock, rf
     )
 
-    # Immediate Generator
+    # Immediate generator
+    u_imm = ImmGen(sig.instruction, sig.immediate)
 
-    u_imm = ImmGen(
-        instr=sig.instruction,
-        imm=sig.immediate
-    )
-
- 
-    # Control Unit
-
+    # Control
     u_ctrl = MainControl(
-        opcode=sig.opcode,
-        RegWrite=sig.RegWrite,
-        MemRead=sig.MemRead,
-        MemtoReg=sig.MemtoReg,
-        MemWrite=sig.MemWrite,
-        ALUSrc=sig.ALUSrc,
-        Branch=sig.Branch,
-        ALUOp=sig.ALUOp
+        sig.opcode,
+        sig.Branch, sig.ALUSrc, sig.MemRead,
+        sig.MemWrite, sig.MemtoReg, sig.RegWrite,
+        sig.ALUOp
     )
 
-
-    # ALU Control
-
+    # ALU control
     u_alu_ctrl = ALUControl(
-        ALUOp=sig.ALUOp,
-        funct3=sig.funct3,
-        funct7=sig.funct7,
-        ALUCtrl=sig.ALUOperation
+        sig.ALUOp,
+        sig.funct3,
+        sig.funct7,
+        sig.ALUOperation
     )
 
-    # ALU Input MUX
-
-    u_alu_mux = Mux2(
-        sel=sig.ALUSrc,
-        in0=sig.ReadData2,
-        in1=sig.immediate,
-        out=sig.ALUInput2
+    # ALU input mux
+    u_mux = Mux2(
+        sig.ALUSrc,
+        sig.ReadData2,
+        sig.immediate,
+        sig.ALUInput2
     )
-
 
     # ALU
-
     u_alu = ALU(
-        op=sig.ALUOperation,
-        in1=sig.ReadData1,
-        in2=sig.ALUInput2,
-        result=sig.ALUResult,
-        zero=sig.Zero
+        sig.ALUOperation,
+        sig.ReadData1,
+        sig.ALUInput2,
+        sig.ALUResult,
+        sig.Zero
     )
 
-
-    # Data Memory
-
+    # Data memory
     u_dmem = Ram(
-        addr=sig.ALUResult,
-        din=sig.ReadData2,
-        dout=sig.MemReadData,
-        we=sig.MemWrite,
-        clock=clock,
-        mem=dmem_data
+        sig.ALUResult,
+        sig.ReadData2,
+        sig.MemReadData,
+        sig.MemWrite,
+        clock,
+        dmem_data
     )
 
-
-    # Writeback MUX
-
-    u_wb_mux = Mux2(
-        sel=sig.MemtoReg,
-        in0=sig.ALUResult,
-        in1=sig.MemReadData,
-        out=sig.WriteData
+    # Writeback mux
+    u_wb = Mux2(
+        sig.MemtoReg,
+        sig.ALUResult,
+        sig.MemReadData,
+        sig.WriteData
     )
-
 
     # PC + 4
+    u_pc_add = Adder(sig.PC, sig.Const4, sig.PC4)
 
-    u_pc_add = Adder(
-        in1=sig.PC,
-        in2=sig.Const4,
-        out=sig.PC4
-    )
+    # Branch target
+    u_branch = Adder(sig.PC, sig.immediate, sig.BranchTarget)
 
-
-    # Branch Target
-
-    u_branch_add = Adder(
-        in1=sig.PC,
-        in2=sig.immediate,
-        out=sig.BranchTarget
-    )
-
-
-    # PCSrc logic
-
-    u_and = And2(
-        in1=sig.Branch,
-        in2=sig.Zero,
-        out=sig.PCSrc
-    )
-
-
-    # Next PC MUX
+    # PC select
+    u_and = And2(sig.Branch, sig.Zero, sig.PCSrc)
 
     u_pc_mux = Mux2(
-        sel=sig.PCSrc,
-        in0=sig.PC4,
-        in1=sig.BranchTarget,
-        out=sig.NextPC
+        sig.PCSrc,
+        sig.PC4,
+        sig.BranchTarget,
+        sig.NextPC
     )
 
-    # PC Register
-
-    u_PC = RegisterE(
-        sig.PC,
-        sig.NextPC,
-        sig.signal1,
-        clock,
-        reset
-    )
+    # PC register
     u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
-
 
     ##### Do NOT change the lines below
     @always_comb
