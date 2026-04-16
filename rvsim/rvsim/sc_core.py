@@ -53,57 +53,150 @@ def     RISCVCore(imem_data, dmem_data, rf, clock, reset, env):
     # sig.signal1 is always 1, which means that PC is always updated in this
     # implementation
 
-    # PC + 4
+    # Instruction Memory
 
-    u_pc_adder = Adder(
-        in1=sig.PC,
-        in2=4,
-        out=sig.PC_plus4
+    u_imem = Rom(
+        addr=sig.PC,
+        dout=sig.instruction,
+        mem=imem_data
     )
 
-  
-    # Hazard Detection 
+    # Register File
 
-    @always_comb
-    def hazard_detection():
-        sig.stall.next = 0
+    u_rf = RegisterFile(
+        rs1=sig.rs1,
+        rs2=sig.rs2,
+        rd=sig.rd,
+        rd_data=sig.WriteData,
+        regWrite=sig.RegWrite,
+        rs1_data=sig.ReadData1,
+        rs2_data=sig.ReadData2,
+        clock=clock,
+        regs=rf
+    )
 
-        # Check EX stage
-        if (sig.ID_rs1 == sig.EX_rd and sig.EX_RegWrite) or \
-           (sig.ID_rs2 == sig.EX_rd and sig.EX_RegWrite):
-            sig.stall.next = 1
+    # Immediate Generator
 
-        # Check MEM stage
-        elif (sig.ID_rs1 == sig.MEM_rd and sig.MEM_RegWrite) or \
-             (sig.ID_rs2 == sig.MEM_rd and sig.MEM_RegWrite):
-            sig.stall.next = 1
+    u_imm = ImmGen(
+        instr=sig.instruction,
+        imm=sig.immediate
+    )
 
-
-    # PC Control
-
-    @always_comb
-    def pc_logic():
-        if sig.stall:
-            sig.NextPC.next = sig.PC   # freeze PC
-        else:
-            sig.NextPC.next = sig.PC_plus4
-
-
-    # Pipeline Stall Control
  
-    @always_comb
-    def stall_logic():
-        if sig.stall:
-            sig.IF_ID_Write.next = 0   # freeze IF/ID
-            sig.ID_EX_Flush.next = 1   # insert bubble
-        else:
-            sig.IF_ID_Write.next = 1
-            sig.ID_EX_Flush.next = 0
+    # Control Unit
 
+    u_ctrl = MainControl(
+        opcode=sig.opcode,
+        RegWrite=sig.RegWrite,
+        MemRead=sig.MemRead,
+        MemtoReg=sig.MemtoReg,
+        MemWrite=sig.MemWrite,
+        ALUSrc=sig.ALUSrc,
+        Branch=sig.Branch,
+        ALUOp=sig.ALUOp
+    )
+
+
+    # ALU Control
+
+    u_alu_ctrl = ALUControl(
+        ALUOp=sig.ALUOp,
+        funct3=sig.funct3,
+        funct7=sig.funct7,
+        ALUCtrl=sig.ALUOperation
+    )
+
+    # ALU Input MUX
+
+    u_alu_mux = Mux2(
+        sel=sig.ALUSrc,
+        in0=sig.ReadData2,
+        in1=sig.immediate,
+        out=sig.ALUInput2
+    )
+
+
+    # ALU
+
+    u_alu = ALU(
+        op=sig.ALUOperation,
+        in1=sig.ReadData1,
+        in2=sig.ALUInput2,
+        result=sig.ALUResult,
+        zero=sig.Zero
+    )
+
+
+    # Data Memory
+
+    u_dmem = Ram(
+        addr=sig.ALUResult,
+        din=sig.ReadData2,
+        dout=sig.MemReadData,
+        we=sig.MemWrite,
+        clock=clock,
+        mem=dmem_data
+    )
+
+
+    # Writeback MUX
+
+    u_wb_mux = Mux2(
+        sel=sig.MemtoReg,
+        in0=sig.ALUResult,
+        in1=sig.MemReadData,
+        out=sig.WriteData
+    )
+
+
+    # PC + 4
+
+    u_pc_add = Adder(
+        in1=sig.PC,
+        in2=sig.Const4,
+        out=sig.PC4
+    )
+
+
+    # Branch Target
+
+    u_branch_add = Adder(
+        in1=sig.PC,
+        in2=sig.immediate,
+        out=sig.BranchTarget
+    )
+
+
+    # PCSrc logic
+
+    u_and = And2(
+        in1=sig.Branch,
+        in2=sig.Zero,
+        out=sig.PCSrc
+    )
+
+
+    # Next PC MUX
+
+    u_pc_mux = Mux2(
+        sel=sig.PCSrc,
+        in0=sig.PC4,
+        in1=sig.BranchTarget,
+        out=sig.NextPC
+    )
 
     # PC Register
 
+    u_PC = RegisterE(
+        sig.PC,
+        sig.NextPC,
+        sig.signal1,
+        clock,
+        reset
+    )
     u_PC = RegisterE(sig.PC, sig.NextPC, sig.signal1, clock, reset)
+
+
     ##### Do NOT change the lines below
     @always_comb
     def set_done():
